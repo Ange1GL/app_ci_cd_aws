@@ -10,18 +10,14 @@ variables:
 
 stages:
 
-  # ================================
-  # STAGE 1: BUILD & PUSH al ACR
-  # ================================
   - stage: BuildPush
     displayName: 'Build & Push Image to ACR'
     jobs:
       - job: Build
         pool:
-          vmImage: ubuntu-latest
+          name: MyLocalAgent        # ← CAMBIO AQUÍ
         steps:
           - checkout: self
-
           - task: Docker@2
             displayName: 'Build and Push to ACR'
             inputs:
@@ -33,16 +29,13 @@ stages:
                 $(tag)
                 latest
 
-  # ================================
-  # STAGE 2: DEPLOY a Container Apps
-  # ================================
   - stage: Deploy
     displayName: 'Deploy to Container Apps'
     dependsOn: BuildPush
     jobs:
       - job: Deploy
         pool:
-          vmImage: ubuntu-latest
+          name: MyLocalAgent        # ← CAMBIO AQUÍ
         steps:
           - task: AzureCLI@2
             displayName: 'Update Container App'
