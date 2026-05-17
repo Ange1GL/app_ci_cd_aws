@@ -15,7 +15,7 @@ stages:
     jobs:
       - job: Build
         pool:
-          name: MyLocalAgent        # ← CAMBIO AQUÍ
+          name: MyLocalAgent
         steps:
           - checkout: self
           - task: Docker@2
@@ -35,16 +35,16 @@ stages:
     jobs:
       - job: Deploy
         pool:
-          name: MyLocalAgent        # ← CAMBIO AQUÍ
+          name: MyLocalAgent
         steps:
           - task: AzureCLI@2
             displayName: 'Update Container App'
             inputs:
               azureSubscription: 'sc-azure-connection'
-              scriptType: bash
+              scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
-                az containerapp update \
-                  --name $(containerAppName) \
-                  --resource-group $(resourceGroup) \
+                az containerapp update `
+                  --name $(containerAppName) `
+                  --resource-group $(resourceGroup) `
                   --image $(acrLoginServer)/$(imageName):$(tag)
