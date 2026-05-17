@@ -1,0 +1,57 @@
+trigger:
+  - main
+
+variables:
+  acrLoginServer: 'crappprodeastus001.azurecr.io'
+  imageName: 'spring-app'
+  tag: $(Build.BuildId)
+  resourceGroup: 'app'
+  containerAppName: 'ca-app-prod-eastus-001'
+
+stages:
+
+  # ================================
+  # STAGE 1: BUILD & PUSH al ACR
+  # ================================
+  - stage: BuildPush
+    displayName: 'Build & Push Image to ACR'
+    jobs:
+      - job: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: self
+
+          - task: Docker@2
+            displayName: 'Build and Push to ACR'
+            inputs:
+              containerRegistry: 'sc-acr-connection'
+              repository: $(imageName)
+              command: buildAndPush
+              Dockerfile: Dockerfile
+              tags: |
+                $(tag)
+                latest
+
+  # ================================
+  # STAGE 2: DEPLOY a Container Apps
+  # ================================
+  - stage: Deploy
+    displayName: 'Deploy to Container Apps'
+    dependsOn: BuildPush
+    jobs:
+      - job: Deploy
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: AzureCLI@2
+            displayName: 'Update Container App'
+            inputs:
+              azureSubscription: 'sc-azure-connection'
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                az containerapp update \
+                  --name $(containerAppName) \
+                  --resource-group $(resourceGroup) \
+                  --image $(acrLoginServer)/$(imageName):$(tag)
