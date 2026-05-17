@@ -13,6 +13,6 @@ public class OcrController
 {
     @GetMapping
     public ResponseEntity<@NonNull OcrResponse> get() {
-        return ResponseEntity.ok(new OcrResponse("Hello world"));
+        return ResponseEntity.ok(new OcrResponse("Hello Angel Gbariel"));
     }
 }
