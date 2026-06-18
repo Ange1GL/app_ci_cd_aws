@@ -2,11 +2,11 @@ trigger:
   - main
 
 variables:
-  acrLoginServer: 'crappprodeastus001.azurecr.io'
+  acrLoginServer: 'appcontainerm2m.azurecr.io'
   imageName: 'spring-app'
   tag: $(Build.BuildId)
   resourceGroup: 'app'
-  containerAppName: 'ca-app-prod-eastus-001'
+  containerAppName: 'appcontainer'
 
 stages:
 
@@ -21,7 +21,7 @@ stages:
           - task: Docker@2
             displayName: 'Build and Push to ACR'
             inputs:
-              containerRegistry: 'sc-acr-connection'
+              containerRegistry: 'acr-connection-a'
               repository: $(imageName)
               command: buildAndPush
               Dockerfile: Dockerfile
@@ -40,7 +40,7 @@ stages:
           - task: AzureCLI@2
             displayName: 'Update Container App'
             inputs:
-              azureSubscription: 'sc-azure-connection'
+              azureSubscription: 'azuregroup'
               scriptType: ps
               scriptLocation: inlineScript
               inlineScript: |
