@@ -15,7 +15,7 @@ public class OcrController
 {
     @GetMapping
     public ResponseEntity<@NonNull OcrResponse> get() {
-
+        log.info("Entering OcrController.get()");
         return ResponseEntity.ok(new OcrResponse("Hello Angel Gbariel"));
     }
 }
