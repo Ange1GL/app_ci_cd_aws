@@ -18,4 +18,11 @@ public class OcrController
         log.info("Entering OcrController.get()");
         return ResponseEntity.ok(new OcrResponse("Hello Angel Gbariel"));
     }
+
+
+    @GetMapping
+    public ResponseEntity<@NonNull OcrResponse> create() {
+        log.info("Entering OcrController.create()");
+        return ResponseEntity.ok(new OcrResponse("Create - OCR"));
+    }
 }
