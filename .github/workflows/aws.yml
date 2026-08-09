@@ -26,16 +26,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # TEMPORAL: nos ayuda a validar el formato OIDC de 2026
-      - name: Debug GitHub context
-        run: |
-          echo "Repository = ${{ github.repository }}"
-          echo "Repository ID = ${{ github.repository_id }}"
-          echo "Owner = ${{ github.repository_owner }}"
-          echo "Owner ID = ${{ github.repository_owner_id }}"
-          echo "Ref = ${{ github.ref }}"
-          echo "Event = ${{ github.event_name }}"
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
