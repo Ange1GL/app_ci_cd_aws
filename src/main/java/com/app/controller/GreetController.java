@@ -17,7 +17,7 @@ public class GreetController
     @GetMapping
     public ResponseEntity<@NonNull GenericResponse> get() {
         log.info("Entering GreetController.get()");
-        return ResponseEntity.ok(new GenericResponse("Hola Miguel"));
+        return ResponseEntity.ok(new GenericResponse("Hola Miguel Nuevo"));
     }
 
     @PostMapping
