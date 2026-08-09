@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  id-token: write
+
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: app-aws
@@ -12,10 +16,6 @@ env:
   ECS_SERVICE: app-task-service-q27gj4zx
   ECS_TASK_DEFINITION: .aws/task-definition.json
   CONTAINER_NAME: main-8081
-
-permissions:
-  contents: read
-  id-token: write
 
 jobs:
   deploy:
@@ -26,10 +26,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # TEMPORAL: comprobar repo y rama reales
+      # TEMPORAL: nos ayuda a validar el formato OIDC de 2026
       - name: Debug GitHub context
         run: |
           echo "Repository = ${{ github.repository }}"
+          echo "Repository ID = ${{ github.repository_id }}"
+          echo "Owner = ${{ github.repository_owner }}"
+          echo "Owner ID = ${{ github.repository_owner_id }}"
           echo "Ref = ${{ github.ref }}"
           echo "Event = ${{ github.event_name }}"
 
@@ -49,8 +52,12 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+
+          docker push \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Update ECS task definition
